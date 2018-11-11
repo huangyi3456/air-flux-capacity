@@ -29,7 +29,9 @@ public class DailyPlanGenerator {
 
     private void init() {
         airplaneSet = airplaneRepository.getAirplane();
-        scheduleList = scheduleRepository.getSchedule();
+        scheduleList = new ArrayList<Schedule>(scheduleRepository.getSchedule());
+        Collections.sort(scheduleList,
+                (o1, o2) -> (int) (o1.getDepatureTime() - o2.getDepatureTime()));
         airportMap = airportController.initAirport(airplaneSet);
         flightPlanMap = new HashMap<>();
         operationsPlanMap = new HashMap<>();
@@ -44,6 +46,13 @@ public class DailyPlanGenerator {
         }
     }
 
+    /**
+     * This method applies depth first search to find the first valid plans.
+     * plans are valid such as 1) each plane's last journey is going home
+     * 2) all schedule have been consumed
+     * @param scheduleList a list of schedule will be consume
+     * @return true if there is a valid plan; false otherwise.
+     */
     private boolean dfs(List<Schedule> scheduleList) {
         if (scheduleList.size() == 0) {
             if (airplaneAtHome(operationsPlanMap))
@@ -53,8 +62,11 @@ public class DailyPlanGenerator {
         }
         Schedule schedule = scheduleList.remove(0);
         List<Airplane> candidatePlanList = calCandidatePlane(schedule);
-        if (candidatePlanList.size() == 0)
+        if (candidatePlanList.size() == 0) {
+            scheduleList.add(0, schedule);
             return false;
+        }
+
         Airport originAirport = airportMap.get(schedule.getOrigin());
         Airport destAirport = airportMap.get(schedule.getDestination());
         for (Airplane airplane : candidatePlanList) {
@@ -83,6 +95,11 @@ public class DailyPlanGenerator {
         return false;
     }
 
+    /**
+     * This method check whether all airplanes are at home
+     * @param operationsPlanMap map contains all airplanes plans
+     * @return true if they are all at home; false otherwise.
+     */
     private boolean airplaneAtHome(Map<String, List<OperationsPlan>> operationsPlanMap) {
         for (Map.Entry<String, List<OperationsPlan>> entry : operationsPlanMap.entrySet()) {
             List<OperationsPlan> list = entry.getValue();
@@ -98,15 +115,20 @@ public class DailyPlanGenerator {
         return true;
     }
 
+    /**
+     * This method calculate candidate airplanes based on current status of all airports and
+     * the schedule
+     * @param schedule to carry out
+     * @return planes can consume the schedule
+     */
     public List<Airplane> calCandidatePlane(Schedule schedule) {
         Airport origin = airportMap.get(schedule.getOrigin());
         // get airplane status
-        // 1, arrival time < deparure
-        // 2, either base here or base the destination airport
+        // arrival time < deparure
+        long departureTime = schedule.getDepatureTime();
         String destName = schedule.getDestination();
         List<Airplane> candidatePlaneList = origin.getAirplanes().stream().filter(airplaneStatus ->
-                airplaneStatus.getAirplane().getBase().equals(origin.getIdentity())
-                        || airplaneStatus.getAirplane().getBase().equals(destName))
+                airplaneStatus.getArrival() < departureTime)
                 .map(airplaneStatus -> airplaneStatus.getAirplane())
                 .collect(Collectors.toList());
         return candidatePlaneList;

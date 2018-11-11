@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import yilu.task.entity.FlightPlan;
 import yilu.task.service.PlanService;
+import yilu.task.utils.TimeDateHelperUtil;
+import yilu.task.vo.FlightPlanVO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/")
@@ -21,12 +24,25 @@ public class FlightPlanResource {
     PlanService planService;
 
     @RequestMapping(value="/flightplan", method = RequestMethod.GET, produces = "application/json")
-    public List<FlightPlan> getFlightPlan(Model model) {
-        return planService.getFlightPlan();
+    public List<FlightPlanVO> getFlightPlan(Model model) {
+
+        return transformToVO(planService.getFlightPlan());
     }
 
     @RequestMapping(value="/flightplan/{airport}", method = RequestMethod.GET, produces = "application/json")
-    public List<FlightPlan> getFlightPlanByAirport(@PathVariable String airport, Model model) {
-        return planService.getFlightPlanByAirport(airport);
+    public List<FlightPlanVO> getFlightPlanByAirport(@PathVariable String airport, Model model) {
+        return transformToVO(planService.getFlightPlanByAirport(airport));
+    }
+
+    private List<FlightPlanVO> transformToVO(List<FlightPlan> planList) {
+        return planList.stream().map(plan -> {
+            FlightPlanVO vo = new FlightPlanVO();
+            vo.setArrival(TimeDateHelperUtil.getStrFromEpochSec(plan.getArrival(), plan.getDestination()));
+            vo.setDeparture(TimeDateHelperUtil.getStrFromEpochSec(plan.getDeparture(), plan.getOrigin()));
+            vo.setDestination(plan.getDestination());
+            vo.setEquipment(plan.getEquipment());
+            vo.setOrigin(plan.getOrigin());
+            return vo;
+        }).collect(Collectors.toList());
     }
 }

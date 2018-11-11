@@ -4,8 +4,9 @@ import yilu.task.entity.Schedule;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ScheduleRepository {
-    List<Schedule> getSchedule();
+    Set<Schedule> getSchedule();
 }

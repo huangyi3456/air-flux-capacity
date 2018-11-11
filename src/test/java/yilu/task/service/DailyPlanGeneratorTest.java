@@ -92,7 +92,7 @@ public class DailyPlanGeneratorTest {
         schedule4.setDestination("TXL");
         schedule4.setDepatureTime(13);
         schedule4.setFlightTime(1);
-        ArrayList<Schedule> scheduleList = new ArrayList<Schedule>(){{
+        Set<Schedule> scheduleList = new HashSet<Schedule>(){{
             add(schedule1);
             add(schedule2);
             add(schedule3);
@@ -156,7 +156,7 @@ public class DailyPlanGeneratorTest {
         schedule6.setDestination("LHR");
         schedule6.setDepatureTime(14);
         schedule6.setFlightTime(2);
-        ArrayList<Schedule> scheduleList = new ArrayList<Schedule>(){{
+        Set<Schedule> scheduleList = new HashSet<Schedule>(){{
             add(schedule1);
             add(schedule2);
             add(schedule3);

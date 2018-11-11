@@ -11,6 +11,11 @@ import java.util.*;
  */
 @Component
 public class AirportControllerIml implements AirportController {
+    /**
+     * This method build airports from set of airplanes.
+     * @param airplaneList all existing airplanes
+     * @return an map, key: Airport:: identity, value: airplanes are on the way to it or already arrive there.
+     */
     public Map<String, Airport> initAirport(Set<Airplane> airplaneList) {
         Map<String, Airport> map = new HashMap<>();
         airplaneList.stream().map(airplane -> {
@@ -28,16 +33,14 @@ public class AirportControllerIml implements AirportController {
             }).getAirplanes().add(airplaneStatus);
         });
         return map;
-/*        return airplaneList.stream().map(Airplane::getBase).distinct()
-                .map(airportName -> {
-                    Airport airport = new Airport();
-                    airport.setIdentity(airportName);
-                    airport.setAirplanes(new ArrayList<>());
-                    return airport;
-                }).collect(Collectors.toMap(Airport::getIdentity, airport -> airport));*/
     }
 
-
+    /**
+     * This method changes the status of a airplane.
+     * @param origin departure from
+     * @param airplane airplane which takes off;
+     * @return the updated airplane
+     */
     public AirplaneStatus takeOff(Airport origin, Airplane airplane) {
         Iterator<AirplaneStatus> iterator =origin.getAirplanes().iterator();
         while (iterator.hasNext()) {
@@ -50,6 +53,13 @@ public class AirportControllerIml implements AirportController {
         return null;
     }
 
+    /**
+     *
+     * @param schedule
+     * @param airplane
+     * @param destAirport
+     * @return
+     */
     public AirplaneStatus noticeDest(Schedule schedule, Airplane airplane, Airport destAirport) {
         AirplaneStatus airplaneStatus = new AirplaneStatus();
         airplaneStatus.setAirplane(airplane);
@@ -58,10 +68,20 @@ public class AirportControllerIml implements AirportController {
         return airplaneStatus;
     }
 
+    /**
+     * This method is used to put an airplane back to the airport
+     * @param origin departure from which airport
+     * @param airplaneStatus the airplane need to be revoked
+     */
     public void reverseTakeOff(Airport origin, AirplaneStatus airplaneStatus) {
         origin.getAirplanes().add(airplaneStatus);
     }
 
+    /**
+     * This method remove an plane from its destination airport
+     * @param destAirport coming to which airport
+     * @param airplaneStatus the airplane need to be revoked
+     */
     public void reverseNoticeDest(Airport destAirport, AirplaneStatus airplaneStatus) {
         destAirport.getAirplanes().remove(airplaneStatus);
     }

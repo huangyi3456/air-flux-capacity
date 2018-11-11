@@ -1,5 +1,7 @@
 package yilu.task.entity;
 
+import java.util.Objects;
+
 public class Schedule {
     private long depatureTime;
     private String origin;
@@ -41,5 +43,22 @@ public class Schedule {
     @Override
     public String toString() {
         return "depature: " + depatureTime + ", origin: " + origin + ", destination: " + destination + ", flight time: " + flightTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Schedule schedule = (Schedule) o;
+        return depatureTime == schedule.depatureTime &&
+                flightTime == schedule.flightTime &&
+                Objects.equals(origin, schedule.origin) &&
+                Objects.equals(destination, schedule.destination);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(depatureTime, origin, destination, flightTime);
     }
 }
