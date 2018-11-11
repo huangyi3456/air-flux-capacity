@@ -3,13 +3,13 @@ package yilu.task.dao;
 import yilu.task.entity.Airplane;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Repository
 public class AirplaneRepoFromFile implements AirplaneRepository {
     @Override
-    public List<Airplane> getAirplane() {
-        return new ArrayList<>();
+    public Set<Airplane> getAirplane() {
+        return new HashSet<>();
     }
 }

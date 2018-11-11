@@ -1,6 +1,5 @@
 package yilu.task.entity;
 
-
 public class OperationsPlan {
     private String origin;
     private String destination;
@@ -28,5 +27,20 @@ public class OperationsPlan {
 
     public void setDeparture(long departure) {
         this.departure = departure;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (origin.hashCode() * 13 + destination.hashCode() * 7 + departure * 3);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof OperationsPlan) {
+            OperationsPlan o1 = (OperationsPlan) o;
+            return this.origin.equals(o1.origin) && this.destination.equals(o1.destination)
+                    && this.departure == o1.departure;
+        }
+        return false;
     }
 }

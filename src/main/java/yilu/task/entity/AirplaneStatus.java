@@ -1,7 +1,5 @@
 package yilu.task.entity;
 
-import yilu.task.entity.Airplane;
-
 public class AirplaneStatus {
     private Airplane airplane;
     private long arrival;
@@ -25,4 +23,21 @@ public class AirplaneStatus {
     public void setArrival(long arrival) {
         this.arrival = arrival;
     }
+
+    @Override
+    public int hashCode() {
+        return airplane.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AirplaneStatus) {
+            AirplaneStatus o1 = (AirplaneStatus) o;
+            return airplane.equals(o1.getAirplane());
+        } else {
+            return false;
+        }
+
+    }
+
 }

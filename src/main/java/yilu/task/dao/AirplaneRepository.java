@@ -3,10 +3,10 @@ package yilu.task.dao;
 import yilu.task.entity.Airplane;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface AirplaneRepository {
-    List<Airplane> getAirplane();
+    Set<Airplane> getAirplane();
 
 }
